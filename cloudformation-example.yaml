@@ -1,0 +1,410 @@
+Resources:
+  items07D08F4B:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        - AttributeName: itemId
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: itemId
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: items
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/items/Resource
+  getOneFunctionServiceRole3315E1E0:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/getOneFunction/ServiceRole/Resource
+  getOneFunctionServiceRoleDefaultPolicy61FFCB77:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+              - dynamodb:ConditionCheckItem
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+              - dynamodb:GetItem
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:PutItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - items07D08F4B
+                  - Arn
+              - Ref: AWS::NoValue
+        Version: "2012-10-17"
+      PolicyName: getOneFunctionServiceRoleDefaultPolicy61FFCB77
+      Roles:
+        - Ref: getOneFunctionServiceRole3315E1E0
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/getOneFunction/ServiceRole/DefaultPolicy/Resource
+  getOneFunctionE5D4700E:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-947992995263-eu-central-1
+        S3Key: 070e2311ab11ce9d38b339ef6eac71182d99b6c0905c1fb87bb180579bce897d.zip
+      Role:
+        Fn::GetAtt:
+          - getOneFunctionServiceRole3315E1E0
+          - Arn
+      Environment:
+        Variables:
+          PRIMARY_KEY: itemId
+          TABLE_NAME:
+            Ref: items07D08F4B
+      Handler: handler
+      Runtime: nodejs14.x
+    DependsOn:
+      - getOneFunctionServiceRoleDefaultPolicy61FFCB77
+      - getOneFunctionServiceRole3315E1E0
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/getOneFunction/Resource
+      aws:asset:path: asset.070e2311ab11ce9d38b339ef6eac71182d99b6c0905c1fb87bb180579bce897d.zip
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  createItemFunctionServiceRole1BBF2178:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/createItemFunction/ServiceRole/Resource
+  createItemFunctionServiceRoleDefaultPolicy8FAF1611:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+              - dynamodb:ConditionCheckItem
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+              - dynamodb:GetItem
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:PutItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - items07D08F4B
+                  - Arn
+              - Ref: AWS::NoValue
+        Version: "2012-10-17"
+      PolicyName: createItemFunctionServiceRoleDefaultPolicy8FAF1611
+      Roles:
+        - Ref: createItemFunctionServiceRole1BBF2178
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/createItemFunction/ServiceRole/DefaultPolicy/Resource
+  createItemFunction8D47E48A:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-947992995263-eu-central-1
+        S3Key: 35aba92b5e286448976e794170623437a460d4706c5a9d8dbf18e2c8dccab141.zip
+      Role:
+        Fn::GetAtt:
+          - createItemFunctionServiceRole1BBF2178
+          - Arn
+      Environment:
+        Variables:
+          PRIMARY_KEY: itemId
+          TABLE_NAME:
+            Ref: items07D08F4B
+      Handler: handler
+      Runtime: nodejs14.x
+    DependsOn:
+      - createItemFunctionServiceRoleDefaultPolicy8FAF1611
+      - createItemFunctionServiceRole1BBF2178
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/createItemFunction/Resource
+      aws:asset:path: asset.35aba92b5e286448976e794170623437a460d4706c5a9d8dbf18e2c8dccab141.zip
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  itemsApi28111E1C:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: Items Service
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Resource
+  itemsApiCloudWatchRoleB5C7B431:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/CloudWatchRole/Resource
+  itemsApiAccount591BF3E1:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - itemsApiCloudWatchRoleB5C7B431
+          - Arn
+    DependsOn:
+      - itemsApi28111E1C
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Account
+  itemsApiDeploymentFEC31BD0ce29f3f0fe95903fdcd1b1528b4c65d2:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: itemsApi28111E1C
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - itemsApiitemsidGET38A333A8
+      - itemsApiitemsidA29927C2
+      - itemsApiitemsPOSTDD3E83D0
+      - itemsApiitems9015DBED
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Deployment/Resource
+  itemsApiDeploymentStageprodE77B897D:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: itemsApi28111E1C
+      DeploymentId:
+        Ref: itemsApiDeploymentFEC31BD0ce29f3f0fe95903fdcd1b1528b4c65d2
+      StageName: prod
+    DependsOn:
+      - itemsApiAccount591BF3E1
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/DeploymentStage.prod/Resource
+  itemsApiitems9015DBED:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - itemsApi28111E1C
+          - RootResourceId
+      PathPart: items
+      RestApiId:
+        Ref: itemsApi28111E1C
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/Resource
+  itemsApiitemsPOSTApiPermissionCodingFestivalInfrastructureAsCodeitemsApi506BA3B3POSTitems90793E35:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createItemFunction8D47E48A
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:947992995263:"
+            - Ref: itemsApi28111E1C
+            - /
+            - Ref: itemsApiDeploymentStageprodE77B897D
+            - /POST/items
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/POST/ApiPermission.CodingFestivalInfrastructureAsCodeitemsApi506BA3B3.POST..items
+  itemsApiitemsPOSTApiPermissionTestCodingFestivalInfrastructureAsCodeitemsApi506BA3B3POSTitems0552E370:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - createItemFunction8D47E48A
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:947992995263:"
+            - Ref: itemsApi28111E1C
+            - /test-invoke-stage/POST/items
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/POST/ApiPermission.Test.CodingFestivalInfrastructureAsCodeitemsApi506BA3B3.POST..items
+  itemsApiitemsPOSTDD3E83D0:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: itemsApiitems9015DBED
+      RestApiId:
+        Ref: itemsApi28111E1C
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :apigateway:eu-central-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - createItemFunction8D47E48A
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/POST/Resource
+  itemsApiitemsidA29927C2:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: itemsApiitems9015DBED
+      PathPart: "{id}"
+      RestApiId:
+        Ref: itemsApi28111E1C
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/{id}/Resource
+  itemsApiitemsidGETApiPermissionCodingFestivalInfrastructureAsCodeitemsApi506BA3B3GETitemsid086F6EE9:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - getOneFunctionE5D4700E
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:947992995263:"
+            - Ref: itemsApi28111E1C
+            - /
+            - Ref: itemsApiDeploymentStageprodE77B897D
+            - /GET/items/*
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/{id}/GET/ApiPermission.CodingFestivalInfrastructureAsCodeitemsApi506BA3B3.GET..items.{id}
+  itemsApiitemsidGETApiPermissionTestCodingFestivalInfrastructureAsCodeitemsApi506BA3B3GETitemsid093A8EE6:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - getOneFunctionE5D4700E
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:eu-central-1:947992995263:"
+            - Ref: itemsApi28111E1C
+            - /test-invoke-stage/GET/items/*
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/{id}/GET/ApiPermission.Test.CodingFestivalInfrastructureAsCodeitemsApi506BA3B3.GET..items.{id}
+  itemsApiitemsidGET38A333A8:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: itemsApiitemsidA29927C2
+      RestApiId:
+        Ref: itemsApi28111E1C
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :apigateway:eu-central-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - getOneFunctionE5D4700E
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/itemsApi/Default/items/{id}/GET/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/02QQU/DMAyFfwv3NMAqce9A3BDT4D65iSlem6SqE6aqyn/HTUHbyd97sZ/s7HS90w93cOHK2L4aqNXLRwTTK7FOi509uGDF/IR2QPX85QtkNYBrLejlNXkTKfj16ZYPODliFpUVgdPLMWzzpR7CQGYufYWy4voEzBhZN2sRrffJ9Bj3wKhgpA4iXmCWIOTYjFSyrtgYE5KP6gXHIcwOBcW9UXJVVxbYQEZDmgyW+H/xl7nxG8bvYFdro5yvfWXHNYh8t3a8pzimeDuelQ8W9Znvfx6fdC1/fGaiapIdyaE+bvUX/jrSun8BAAA=
+    Metadata:
+      aws:cdk:path: CodingFestival-InfrastructureAsCode/CDKMetadata/Default
+Outputs:
+  itemsApiEndpoint8392E274:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: itemsApi28111E1C
+          - .execute-api.eu-central-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: itemsApiDeploymentStageprodE77B897D
+          - /
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.

@@ -1,9 +1,6 @@
 {
   "name": "infrastructure",
   "private": true,
-  "workspaces": [
-    "lib/lambdas"
-  ],
   "version": "0.1.0",
   "bin": {
     "infrastructure": "bin/infrastructure.js"

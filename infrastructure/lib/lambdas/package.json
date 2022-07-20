@@ -5,16 +5,16 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "yarn && yarn create-dir && yarn pack:create && yarn pack:get-one",
+    "build": "tsc && yarn install --production && yarn create-dir && yarn pack:create && yarn pack:get-one",
     "create-dir":  "mkdir -p ../../artifacts",
-    "pack:create": "zip ../../artifacts/create.zip create.ts node_modules/*",
-    "pack:get-one": "zip ../../artifacts/get-one.zip get-one.ts node_modules/*"
+    "pack:create": "zip -r ../../artifacts/create.zip create.js node_modules/*",
+    "pack:get-one": "zip -r ../../artifacts/get-one.zip get-one.js node_modules/*"
   },
   "devDependencies": {
+    "aws-sdk": "^2.1178.0",
     "@types/node": "^18.0.6"
   },
   "dependencies": {
-    "aws-sdk": "^2.1178.0",
     "uuid": "^8.3.2"
   }
 }

@@ -26,19 +26,19 @@ export class InfrastructureStack extends Stack {
         PRIMARY_KEY: 'itemId',
         TABLE_NAME: dynamoTable.tableName,
       },
-      runtime: Runtime.NODEJS_14_X,
-      handler: "handler"
+      runtime: Runtime.NODEJS_14_X
     };
 
     // Create Lambda functions
-
     const getOneLambda = new lambda.Function(this, 'getOneFunction', {
       code: lambda.Code.fromAsset("./artifacts/get-one.zip"),
+      handler: "get-one.handler",
       ...nodeJsFunctionProps
     });
 
     const createOneLambda = new lambda.Function(this, 'createItemFunction', {
       code: lambda.Code.fromAsset("./artifacts/create.zip"),
+      handler: "create.handler",
       ...nodeJsFunctionProps
     });
 

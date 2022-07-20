@@ -22,6 +22,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Build lambdas
+      run:  |
+            cd infrastructure/lib/lambdas
+            yarn install
+            yarn build
+
     - name: Deploy backend
       run:  |
             cd infrastructure/
