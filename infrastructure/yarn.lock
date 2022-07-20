@@ -675,6 +675,11 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-10.17.27.tgz"
   integrity sha512-J0oqm9ZfAXaPdwNXMMgAhylw5fhmXkToJd06vuDUSAgEDZ/n/69/69UmyBZbc+zT34UnShuDSBqvim3SPnozJg==
 
+"@types/node@^18.0.6":
+  version "18.0.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.0.6.tgz#0ba49ac517ad69abe7a1508bc9b3a5483df9d5d7"
+  integrity sha512-/xUq6H2aQm261exT6iZTMifUySEt4GR5KX8eYyY+C4MSNPqSh9oNIP7tz2GLKTlFaiBbgZNxffoR3CVRG+cljw==
+
 "@types/prettier@2.6.0", "@types/prettier@^2.1.5":
   version "2.6.0"
   resolved "https://registry.npmjs.org/@types/prettier/-/prettier-2.6.0.tgz"
@@ -834,6 +839,22 @@ aws-sdk@^2.1176.0:
   version "2.1176.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1176.0.tgz#f3524433a60857a8fcd21722251f2b1f19d72008"
   integrity sha512-jinSKjACYHIkkz0UlFwQXwz8HAHZIeJg5wOnZoMTKU3/WM6Vh26hZJJ6XkwDAfBmyWp3V9qFdQoSAiO8SeXKjw==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.16.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    util "^0.12.4"
+    uuid "8.0.0"
+    xml2js "0.4.19"
+
+aws-sdk@^2.1178.0:
+  version "2.1178.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1178.0.tgz#b0f4b67494e7009427cd7059a3d908d333633fdb"
+  integrity sha512-ZsFuVbTp9aakAIZ7lTJspuCzSw5VRIDF0bUmSZmE2tc/X/haTu/TrMeWgwPjyLkQtdhfjChCyI71V+ADqFkjsA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
