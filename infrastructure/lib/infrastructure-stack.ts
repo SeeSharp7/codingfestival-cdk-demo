@@ -11,15 +11,13 @@ export class InfrastructureStack extends Stack {
     super(scope, id, props);
 
     // The code that defines your stack goes here
-
     const dynamoTable = new Table(this, 'items', {
       partitionKey: {
         name: 'itemId',
         type: AttributeType.STRING
       },
       tableName: 'items',
-      //default removal policy is RETAIN, which means that cdk destroy will not attempt to delete the new table
-      removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code
+      removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code - use RETAIN
     });
 
     const nodeJsFunctionProps: NodejsFunctionProps = {
