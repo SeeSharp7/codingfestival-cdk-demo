@@ -3,6 +3,7 @@ import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Stack, StackProps, RemovalPolicy } from 'aws-cdk-lib';
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 import { join } from 'path'
 
@@ -20,28 +21,25 @@ export class InfrastructureStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code - use RETAIN
     });
 
-    const nodeJsFunctionProps: NodejsFunctionProps = {
-      bundling: {
-        externalModules: [
-          'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
-        ],
-      },
-      depsLockFilePath: join(__dirname, 'lambdas', 'package-lock.json'),
+    const nodeJsFunctionProps = {
       environment: {
         PRIMARY_KEY: 'itemId',
         TABLE_NAME: dynamoTable.tableName,
       },
       runtime: Runtime.NODEJS_14_X,
-    }
+      handler: "handler"
+    };
 
     // Create Lambda functions
-    const getOneLambda = new NodejsFunction(this, 'getOneItemFunction', {
-      entry: join(__dirname, 'lambdas', 'get-one.ts'),
-      ...nodeJsFunctionProps,
+
+    const getOneLambda = new lambda.Function(this, 'getOneFunction', {
+      code: lambda.Code.fromAsset("./artifacts/get-one.zip"),
+      ...nodeJsFunctionProps
     });
-    const createOneLambda = new NodejsFunction(this, 'createItemFunction', {
-      entry: join(__dirname, 'lambdas', 'create.ts'),
-      ...nodeJsFunctionProps,
+
+    const createOneLambda = new lambda.Function(this, 'createItemFunction', {
+      code: lambda.Code.fromAsset("./artifacts/create.zip"),
+      ...nodeJsFunctionProps
     });
 
     // Grant the Lambda function read access to the DynamoDB table
