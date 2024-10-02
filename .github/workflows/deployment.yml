@@ -25,7 +25,6 @@ jobs:
     - name: Build lambdas
       run:  |
             cd infrastructure/lib/lambdas
-            yarn add @types/node
             yarn install
             yarn build
 
