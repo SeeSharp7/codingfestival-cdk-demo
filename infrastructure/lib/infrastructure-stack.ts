@@ -11,7 +11,7 @@ export class InfrastructureStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    // Erstelle Datenbank
     const dynamoTable = new Table(this, 'items', {
       partitionKey: {
         name: 'itemId',
@@ -21,6 +21,7 @@ export class InfrastructureStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code - use RETAIN
     });
 
+    // Erstelle Umgebungsvariablen für Funktionen
     const nodeJsFunctionProps = {
       environment: {
         PRIMARY_KEY: 'itemId',
@@ -29,7 +30,7 @@ export class InfrastructureStack extends Stack {
       runtime: Runtime.NODEJS_14_X
     };
 
-    // Create Lambda functions
+    // Erstelle Funktionen
     const getOneLambda = new lambda.Function(this, 'getOneFunction', {
       code: lambda.Code.fromAsset("./artifacts/get-one.zip"),
       handler: "get-one.handler",
@@ -42,23 +43,21 @@ export class InfrastructureStack extends Stack {
       ...nodeJsFunctionProps
     });
 
-    // Grant the Lambda function read access to the DynamoDB table
+    // Berechtige Funktionen auf Datenbank (zero trust)
     dynamoTable.grantReadWriteData(getOneLambda);
     dynamoTable.grantReadWriteData(createOneLambda);
 
-    // Integrate the Lambda functions with the API Gateway resource
-    const createOneIntegration = new LambdaIntegration(createOneLambda);
-    const getOneIntegration = new LambdaIntegration(getOneLambda);
-
-    // Create an API Gateway resource for each of the CRUD operations
+    // Erstelle API-Gateway
     const api = new RestApi(this, 'itemsApi', {
       restApiName: 'Items Service'
     });
 
+    // Binde Funktion an POST
     const items = api.root.addResource('items');
-    items.addMethod('POST', createOneIntegration);
+    items.addMethod('POST', new LambdaIntegration(createOneLambda));
 
+    // Binde Funktion an GET
     const singleItem = items.addResource('{id}');
-    singleItem.addMethod('GET', getOneIntegration);
+    singleItem.addMethod('GET', new LambdaIntegration(getOneLambda));
   }
 }
